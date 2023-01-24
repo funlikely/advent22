@@ -32,10 +32,10 @@ class Weapon(Enum):
 
 def rps_weapon_score_component(w):
     switch = {
-      Weapon.ROCK: 1,
-      Weapon.PAPER: 2,
-      Weapon.SCISSORS: 3
-      }
+        Weapon.ROCK: 1,
+        Weapon.PAPER: 2,
+        Weapon.SCISSORS: 3
+    }
     return switch.get(w, -1)
 
 
@@ -114,6 +114,42 @@ def clean_data(dirty_data):
     return dirty_data
 
 
+def translate_datum_to_second_round_weapon_pair(datum):
+    weapon_pair = []
+    if datum[0] == 'A':
+        weapon_pair.append(Weapon.ROCK)
+        if datum[1] == 'X':
+            weapon_pair.append(Weapon.SCISSORS)
+        elif datum[1] == 'Y':
+            weapon_pair.append(Weapon.ROCK)
+        else:
+            weapon_pair.append(Weapon.PAPER)
+    elif datum[0] == 'B':
+        weapon_pair.append(Weapon.PAPER)
+        if datum[1] == 'X':
+            weapon_pair.append(Weapon.ROCK)
+        elif datum[1] == 'Y':
+            weapon_pair.append(Weapon.PAPER)
+        else:
+            weapon_pair.append(Weapon.SCISSORS)
+    else:
+        weapon_pair.append(Weapon.SCISSORS)
+        if datum[1] == 'X':
+            weapon_pair.append(Weapon.PAPER)
+        elif datum[1] == 'Y':
+            weapon_pair.append(Weapon.SCISSORS)
+        else:
+            weapon_pair.append(Weapon.ROCK)
+    return weapon_pair
+
+
+def translate_data_to_second_round_list(data_list):
+    result_list = []
+    for i in range(len(data_list)):
+        result_list.append(translate_datum_to_second_round_weapon_pair(data_list[i]))
+    return result_list
+
+
 if __name__ == '__main__':
     f = open("data/problem02.txt")
     lines = f.readlines()
@@ -127,5 +163,18 @@ if __name__ == '__main__':
             f"{rps_result_score_component(weapon_list[i][0], weapon_list[i][1])}")
     total_score = 0
     for rps_match in weapon_list:
+        total_score += rps_result_score_component(rps_match[0], rps_match[1])
+    print(f"total score for this series of RPS is {total_score}")
+
+    # if X = lose, Y = draw, Z = win,
+    second_round_weapon_list = translate_data_to_second_round_list(lines)
+    print("Second round!!!!")
+    print("first ten weapons lists --> " + str(second_round_weapon_list[:10]))
+    for i in range(0, 10):
+        print(
+            f"for game {i} between {second_round_weapon_list[i][0]} and {second_round_weapon_list[i][1]}, the score is "
+            f"{rps_result_score_component(second_round_weapon_list[i][0], second_round_weapon_list[i][1])}")
+    total_score = 0
+    for rps_match in second_round_weapon_list:
         total_score += rps_result_score_component(rps_match[0], rps_match[1])
     print(f"total score for this series of RPS is {total_score}")
