@@ -22,5 +22,5 @@ def split_pack(pack):
     if len(pack) % 2 != 0:
         return []
     else:
-        cut = len(pack) / 2 + 1
+        cut = int(len(pack) / 2)
         return [pack[: cut], pack[cut:]]

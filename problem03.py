@@ -53,11 +53,14 @@ def main():
     lines = [line[:-1] for line in file]
     print("the first three lines of input")
     for i in range(3):
-        print(lines[i])
+        print(f"    {lines[i]}")
     print(f"the priority of characters of the first line of input {lines[0]}:")
     first_length = len(lines[0])
     priority_one = [evaluate_item_priority(lines[0][x]) for x in range(first_length)]
     print([[lines[0][i], priority_one[i]] for i in range(first_length)])
+    print(f"Split pack #1 = {split_pack(lines[0])}")
+    split_pack_one = split_pack(lines[0])
+    print(f"Intersection of split pack #1 = {string_intersection(split_pack_one[0], split_pack_one[1])}")
 
 
 if __name__ == '__main__':
