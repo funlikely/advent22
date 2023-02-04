@@ -62,6 +62,14 @@ def main():
     split_pack_one = split_pack(lines[0])
     print(f"Intersection of split pack #1 = {string_intersection(split_pack_one[0], split_pack_one[1])}")
 
+    split_pack_list = [split_pack(lines[i]) for i in range(len(lines))]
+    print(f"first couple split packs = {split_pack_list[:3]}")
+
+    intersection_list = [string_intersection(split_pack_list[i][0], split_pack_list[i][1])
+                         for i in range(len(split_pack_list))]
+    print(f"first couple intersections = {intersection_list[:3]}")
+
+    # priority_list = [evaluate_item_priority(intersection_list)]
 
 if __name__ == '__main__':
     main()
