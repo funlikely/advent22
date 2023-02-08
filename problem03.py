@@ -48,9 +48,7 @@ from typing import List
 from utility.rucksack import *
 
 
-def main_problem_three_one():
-    file = open("data/problem03.txt")
-    lines = [line[:-1] for line in file]
+def main_problem_three_one(lines):
     print("the first three lines of input")
     for i in range(3):
         print(f"    {lines[i]}")
@@ -80,7 +78,13 @@ def main_problem_three_one():
                                 in range(len(intersection_list_list))]
     print(f"first few priority values = {priority_list[:3]}")
 
-    print(f"ANSWER TO PROBLEM 3.1, total priority sum = {sum(priority_list)}")
+    return sum(priority_list)
+
+
+def read_input_file():
+    file = open("data/problem03.txt")
+    lines = [line[:-1] for line in file]
+    return lines
 
 
 """
@@ -114,10 +118,21 @@ Find the item type that corresponds to the badges of each three-Elf group. What 
 """
 
 
-def main_problem_three_two():
-    pass
+def main_problem_three_two(lines):
+    trios = [[lines[i], lines[i+1], lines[i+2]] for i in range(0, len(lines), 3) ]
+    print(f"first three trios of rucksacks : {trios[:3]}")
+    badges = [string_intersection(trios[i][0], trios[i][1]).intersection(string_intersection(trios[i][0], trios[i][2])) for i in range(len(trios))]
+    print(f"the first three badges are {badges[:3]}")
+    print(f"there are {len([x in badges for x in badges if len(x) > 1])} rucksacks with more than one badge")
+    priorities = [evaluate_item_priority(x.pop()) for x in badges]
+    print(f"the first three badges priorities are {priorities[:3]}")
+    return sum(priorities)
 
 
 if __name__ == '__main__':
-    main_problem_three_one()
-    main_problem_three_two()
+    lines = read_input_file()
+
+    problem_three_answer = main_problem_three_one(lines)
+    print(f"ANSWER TO PROBLEM 3.1, total priority sum = {problem_three_answer}")
+    problem_three_answer = main_problem_three_two(lines)
+    print(f"ANSWER TO PROBLEM 3.2, total priority sum = {problem_three_answer}")
