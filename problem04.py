@@ -56,7 +56,7 @@ In how many assignment pairs does one range fully contain the other?
 """
 
 
-def main_problem_four_one(lines):
+def main_problem_four_one(lines, debug_and_log):
 
     redundant_count = 0
 
@@ -67,7 +67,7 @@ def main_problem_four_one(lines):
 
         if redundancy_exists(a, b, c, d):
             redundant_count += 1
-            if redundant_count % 10 == 1:
+            if redundant_count % 10 == 1 and debug_and_log:
                 print(f"found redundancy number {redundant_count}: {a}-{b} {c}-{d}")
 
     return redundant_count
@@ -136,9 +136,7 @@ def intersection_exists(a, b, c, d):
 if __name__ == '__main__':
     input_file_lines = read_input_file()
 
-    problem_answer = main_problem_four_one(input_file_lines)
+    problem_answer = main_problem_four_one(input_file_lines, False)
     print(f"ANSWER TO PROBLEM 4.1, total number of redundant assignments = {problem_answer}")
-    problem_answer = main_problem_four_two(input_file_lines, True)
-    print(f"ANSWER TO PROBLEM 3.2, total number of intersecting assignments = {problem_answer}")
-
-
+    problem_answer = main_problem_four_two(input_file_lines, False)
+    print(f"ANSWER TO PROBLEM 4.2, total number of intersecting assignments = {problem_answer}")
