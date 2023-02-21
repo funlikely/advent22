@@ -20,3 +20,12 @@ def move_crates(crates, from_stack, to_stack, crate_quantity):
         crates = move_crate(crates, from_stack, to_stack)
 
     return crates
+
+
+def move_stacks_of_crates(crates, from_stack, to_stack, crate_quantity):
+    """Note: stacks start with index 0."""
+    crates_to_move = crates[from_stack][-crate_quantity:]
+    crates[from_stack] = crates[from_stack][:-crate_quantity]
+    crates[to_stack] = crates[to_stack] + crates_to_move
+
+    return crates

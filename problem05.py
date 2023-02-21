@@ -70,7 +70,7 @@ stack 1, M in stack 2, and Z in stack 3, so you should combine these together an
 After the rearrangement procedure completes, what crate ends up on top of each stack?
 
 """
-from utility.crate import read_tops_of_crates, move_crates
+from utility.crate import read_tops_of_crates, move_crates, move_stacks_of_crates
 
 
 def get_initial_crates_config(lines):
@@ -179,9 +179,20 @@ stack?
 """
 
 
-def main_problem_5_2(lines, log_and_debug):
+def main_problem_5_2(lines, debug_and_log):
+    crates = get_initial_crates_config(lines)
 
-    return 0
+    for i in range(10, len(lines)):
+        move_command = lines[i].split(" ")
+        from_stack, to_stack, quantity = map(int, [move_command[3], move_command[5], move_command[1]])
+        crates = move_stacks_of_crates(crates, from_stack - 1, to_stack - 1, quantity)  # need to adjust for 0 based
+        # lists
+        if debug_and_log and i < 20:
+            print(f"{lines[i]} - {crates}")
+
+    crate_string = read_tops_of_crates(crates)
+
+    return crate_string
 
 
 if __name__ == '__main__':
@@ -189,5 +200,5 @@ if __name__ == '__main__':
 
     problem_answer = main_problem_5_1(input_file_lines, False)
     print(f"ANSWER TO PROBLEM 5.1, series of crates = {problem_answer}")
-    problem_answer = main_problem_5_2(input_file_lines, True)
+    problem_answer = main_problem_5_2(input_file_lines, False)
     print(f"ANSWER TO PROBLEM 5.2, series of crates = {problem_answer}")
