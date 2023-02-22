@@ -104,10 +104,10 @@ def process_folder_listing(file_system, current_path, folder_listing_lines):
         if listing_split[0] == "dir":
             folder_name = listing_split[1]
             if folder_name not in file_system.get_list_of_sub_folders(current_path):
-                file_system.sub_folder(current_path).add_folder(folder_name)
+                file_system.sub_folder(current_path).add_sub_folder(folder_name)
         else:
-            file_size = file_name = listing_split[0], listing_split[1]
-            if not file_system.file_exists(current_path, file_name):
+            file_size, file_name = listing_split[0], listing_split[1]
+            if file_name not in file_system.get_list_of_file_names(current_path):
                 file_system.sub_folder(current_path).add_file(file_name, file_size)
 
 
@@ -128,7 +128,7 @@ def main_problem_7_1(lines, debug_and_log):
             elif sub_folder_name == "/":
                 current_path = []
             else:
-                if sub_folder_name not in file_system.sub_folder(current_path).sub_folders():
+                if sub_folder_name not in file_system.get_list_of_sub_folders(current_path):
                     file_system.sub_folder(current_path).sub_folders().add_folder(sub_folder_name, current_path)
                 current_path.append(sub_folder_name)
         elif command == "ls":

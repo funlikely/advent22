@@ -44,3 +44,7 @@ class Folder:
         """Returns list of the names of the immediate sub folders (non-recursive)"""
         return [list(x.keys())[0] for x in self.sub_folder(path).sub_folders]
 
+    def get_list_of_file_names(self, path):
+        """Returns list of the names of the immediate sub folders (non-recursive)"""
+        return [list(x.keys())[0] for x in self.sub_folder(path).files]
+
