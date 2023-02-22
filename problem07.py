@@ -95,10 +95,15 @@ Find all of the directories with a total size of at most 100000. What is the sum
 directories?
 
 """
+import utility.filesystem
 
 
 def main_problem_7_1(lines, debug_and_log):
-    return 0
+
+    file_system = utility.Folder("root", "")
+
+    for i in range(len(lines)):
+        i += 1
 
 
 def read_input_file():
