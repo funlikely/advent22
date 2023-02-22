@@ -98,12 +98,38 @@ directories?
 import utility.filesystem
 
 
+def process_folder_listing(file_system, current_path, folder_listing_lines):
+    for listing in folder_listing_lines:
+        #if file_system.sub_folder(current_path)
+        a = 0
+
+
 def main_problem_7_1(lines, debug_and_log):
 
     file_system = utility.Folder("root", "")
 
-    for i in range(len(lines)):
-        i += 1
+    current_path = []
+
+    command_line_indices = [x for x in range(len(lines)) if lines[x][0] == "$"]
+
+    for i in range(len(command_line_indices)):
+        split_command_line = lines[command_line_indices[i]].split(" ")
+        command = split_command_line[1]
+        if command == "cd":
+            sub_folder_name = split_command_line[2]
+            if sub_folder_name == ".." and len(current_path) > 0:
+                current_path.pop()
+            elif sub_folder_name == "/":
+                current_path = []
+            else:
+                if not file_system.sub_folder(current_path).sub_folders().__contains__(sub_folder_name):
+                    file_system.sub_folder(current_path).sub_folders().add_folder(sub_folder_name, current_path)
+                current_path.append(sub_folder_name)
+        elif command == "ls":
+            folder_listing_lines = lines[command_line_indices[i]+1:command_line_indices[i+1]]
+            process_folder_listing(file_system, current_path, folder_listing_lines)
+
+    return 0
 
 
 def read_input_file():
@@ -113,7 +139,7 @@ def read_input_file():
 
 
 """
-
+Part Two
 """
 
 
