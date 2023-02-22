@@ -40,4 +40,7 @@ class Folder:
     def local_files_size_total(self):
         return sum([list(file.values())[0] for file in self.files])
 
+    def get_list_of_sub_folders(self, path):
+        """Returns list of the names of the immediate sub folders (non-recursive)"""
+        return [list(x.keys())[0] for x in self.sub_folder(path).sub_folders]
 

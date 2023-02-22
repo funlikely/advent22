@@ -95,7 +95,7 @@ Find all of the directories with a total size of at most 100000. What is the sum
 directories?
 
 """
-import utility.filesystem
+from utility.filesystem import Folder
 
 
 def process_folder_listing(file_system, current_path, folder_listing_lines):
@@ -103,7 +103,7 @@ def process_folder_listing(file_system, current_path, folder_listing_lines):
         listing_split = listing.split(" ")
         if listing_split[0] == "dir":
             folder_name = listing_split[1]
-            if folder_name not in file_system.sub_folder(current_path).sub_folders.keys():
+            if folder_name not in file_system.get_list_of_sub_folders(current_path):
                 file_system.sub_folder(current_path).add_folder(folder_name)
         else:
             file_size = file_name = listing_split[0], listing_split[1]
@@ -112,7 +112,7 @@ def process_folder_listing(file_system, current_path, folder_listing_lines):
 
 
 def main_problem_7_1(lines, debug_and_log):
-    file_system = utility.Folder("root", "")
+    file_system = Folder("root", [])
 
     current_path = []
 
