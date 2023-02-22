@@ -100,12 +100,18 @@ import utility.filesystem
 
 def process_folder_listing(file_system, current_path, folder_listing_lines):
     for listing in folder_listing_lines:
-        #if file_system.sub_folder(current_path)
-        a = 0
+        listing_split = listing.split(" ")
+        if listing_split[0] == "dir":
+            folder_name = listing_split[1]
+            if folder_name not in file_system.sub_folder(current_path).sub_folders.keys():
+                file_system.sub_folder(current_path).add_folder(folder_name)
+        else:
+            file_size = file_name = listing_split[0], listing_split[1]
+            if not file_system.file_exists(current_path, file_name):
+                file_system.sub_folder(current_path).add_file(file_name, file_size)
 
 
 def main_problem_7_1(lines, debug_and_log):
-
     file_system = utility.Folder("root", "")
 
     current_path = []
@@ -122,12 +128,14 @@ def main_problem_7_1(lines, debug_and_log):
             elif sub_folder_name == "/":
                 current_path = []
             else:
-                if not file_system.sub_folder(current_path).sub_folders().__contains__(sub_folder_name):
+                if sub_folder_name not in file_system.sub_folder(current_path).sub_folders():
                     file_system.sub_folder(current_path).sub_folders().add_folder(sub_folder_name, current_path)
                 current_path.append(sub_folder_name)
         elif command == "ls":
-            folder_listing_lines = lines[command_line_indices[i]+1:command_line_indices[i+1]]
+            folder_listing_lines = lines[command_line_indices[i] + 1:command_line_indices[i + 1]]
             process_folder_listing(file_system, current_path, folder_listing_lines)
+
+    folder_sizes = file_system.get_all_folder_sizes()
 
     return 0
 
