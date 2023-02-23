@@ -112,7 +112,7 @@ def process_folder_listing(file_system, current_path, folder_listing_lines):
 
 
 def main_problem_7_1(lines, debug_and_log):
-    file_system = Folder("root", [])
+    file_system = Folder("root", [], None)
 
     current_path = []
 

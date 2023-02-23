@@ -1,6 +1,6 @@
 class Folder:
 
-    def __init__(self, name, path):
+    def __init__(self, name, path, parent):
         self.name = name
         """:files: list of dict {name, size} files"""
         self.files = []
@@ -8,14 +8,24 @@ class Folder:
         self.sub_folders = []
         """:path: list of sub folders from the root to this folder; may not be needed if recursion and things work."""
         self.path = path
+        self.size = 0
+        self.parent = parent
 
     def add_sub_folder(self, folder_name):
         """Add a dict {name: Folder(name)} to the set of sub_folders."""
-        self.sub_folders.append({folder_name: Folder(folder_name, self.path + [folder_name])})
+        self.sub_folders.append({folder_name: Folder(folder_name, self.path + [folder_name], self)})
 
     def add_file(self, file_name, file_size):
         """Add a file represented by a dict {name: size} to the set of files"""
         self.files.append({file_name: file_size})
+        self.size += file_size
+        if self.parent is not None:
+            self.parent.update_parent_size(file_size)
+
+    def update_parent_size(self, size):
+        self.size += size
+        if self.parent is not None:
+            self.parent.update_parent_size(size)
 
     def sub_folder(self, sub_folder_path):
         """Return the Folder object represented by the sub folder path."""
@@ -29,20 +39,20 @@ class Folder:
             return self.sub_folder(sub_folder_path[0]).sub_folder(sub_folder_path[1:])
 
     def get_all_folder_sizes(self):
+        """
+        :return: List of Dicts of {(Str)path : (Int)size}
+        """
+
         if not self.sub_folders:
             # base case
-            return {'/'.join(self.path): self.local_files_size_total()}
+            return {'/'.join(self.path): self.size}
         else:
             # recursive case
-            local_files_size = self.local_files_size_total()
-            child_folder_sizes_list =\
-                [{'/'.join(self.path + child.path): child.get_all_folder_sizes()}
-                 for child
-                 in [list(x.values())[0]
-                     for x
-                     in self.sub_folders]]
-            child_folder_sizes_total = sum([list(x.values())[0] for x in child_folder_sizes_list.values()])
-            return [{'/'.join(self.path): local_files_size + child_folder_sizes_total}] + child_folder_sizes_list
+            child_folder_sizes_list = [{'/'.join(self.path + sf.path): sf.size} for sf in self.sub_folder_list()]
+            return [{'/'.join(self.path): self.size}] + child_folder_sizes_list
+
+    def sub_folder_list(self):
+        return [list(x.values())[0] for x in self.sub_folders]
 
     def local_files_size_total(self):
         return sum([list(file.values())[0] for file in self.files])
