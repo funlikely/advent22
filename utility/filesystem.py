@@ -31,13 +31,18 @@ class Folder:
     def get_all_folder_sizes(self):
         if not self.sub_folders:
             # base case
-            return {self.path: self.local_files_size_total()}
+            return {'/'.join(self.path): self.local_files_size_total()}
         else:
             # recursive case
             local_files_size = self.local_files_size_total()
-            child_folder_sizes_list = []
+            child_folder_sizes_list =\
+                [{'/'.join(self.path + child.path): child.get_all_folder_sizes()}
+                 for child
+                 in [list(x.values())[0]
+                     for x
+                     in self.sub_folders]]
             child_folder_sizes_total = sum([list(x.values())[0] for x in child_folder_sizes_list.values()])
-            return [{self.path: local_files_size + child_folder_sizes_total}] + child_folder_sizes_list
+            return [{'/'.join(self.path): local_files_size + child_folder_sizes_total}] + child_folder_sizes_list
 
     def local_files_size_total(self):
         return sum([list(file.values())[0] for file in self.files])
