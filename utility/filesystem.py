@@ -11,7 +11,7 @@ class Folder:
 
     def add_sub_folder(self, folder_name):
         """Add a dict {name: Folder(name)} to the set of sub_folders."""
-        self.sub_folders.append({folder_name: Folder(folder_name, self.path.append(self.name))})
+        self.sub_folders.append({folder_name: Folder(folder_name, self.path + [folder_name])})
 
     def add_file(self, file_name, file_size):
         """Add a file represented by a dict {name: size} to the set of files"""
@@ -22,9 +22,11 @@ class Folder:
         # root case
         if not sub_folder_path:
             return self
+        elif isinstance(sub_folder_path, str):
+            return self.get_specific_sub_folder(sub_folder_path)
         # recursive case
         else:
-            return self.sub_folders[sub_folder_path[0]].sub_folder(sub_folder_path[1:])
+            return self.sub_folder(sub_folder_path[0]).sub_folder(sub_folder_path[1:])
 
     def get_all_folder_sizes(self):
         if not self.sub_folders:
@@ -47,4 +49,7 @@ class Folder:
     def get_list_of_file_names(self, path):
         """Returns list of the names of the immediate sub folders (non-recursive)"""
         return [list(x.keys())[0] for x in self.sub_folder(path).files]
+
+    def get_specific_sub_folder(self, name):
+        return [folder for folder in self.sub_folders if list(folder.keys())[0] == name][0][name]
 

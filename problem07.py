@@ -106,7 +106,7 @@ def process_folder_listing(file_system, current_path, folder_listing_lines):
             if folder_name not in file_system.get_list_of_sub_folders(current_path):
                 file_system.sub_folder(current_path).add_sub_folder(folder_name)
         else:
-            file_size, file_name = listing_split[0], listing_split[1]
+            file_size, file_name = int(listing_split[0]), listing_split[1]
             if file_name not in file_system.get_list_of_file_names(current_path):
                 file_system.sub_folder(current_path).add_file(file_name, file_size)
 
@@ -132,7 +132,11 @@ def main_problem_7_1(lines, debug_and_log):
                     file_system.sub_folder(current_path).sub_folders().add_folder(sub_folder_name, current_path)
                 current_path.append(sub_folder_name)
         elif command == "ls":
-            folder_listing_lines = lines[command_line_indices[i] + 1:command_line_indices[i + 1]]
+            to_index = len(lines)
+            if i + 1 < len(command_line_indices):
+                to_index = command_line_indices[i + 1]
+            from_index = command_line_indices[i] + 1
+            folder_listing_lines = lines[from_index:to_index]
             process_folder_listing(file_system, current_path, folder_listing_lines)
 
     folder_sizes = file_system.get_all_folder_sizes()
