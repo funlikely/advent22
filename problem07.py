@@ -96,6 +96,8 @@ directories?
 
 """
 from utility.filesystem import Folder
+from utility.listutility import flatten
+import itertools
 
 
 def process_folder_listing(file_system, current_path, folder_listing_lines):
@@ -139,13 +141,23 @@ def main_problem_7_1(lines, debug_and_log):
             folder_listing_lines = lines[from_index:to_index]
             process_folder_listing(file_system, current_path, folder_listing_lines)
 
-    folder_sizes = file_system.get_all_folder_sizes()
+    z = [[1, [{'x': {'y': 'z'}}, 2, [[3], [[5, 4], 2]]]]]
+    flattened_z = flatten(z)
+    print(flattened_z)
 
+    folder_sizes = file_system.get_all_folder_sizes()
+    folder_sizes = folder_sizes[1:]  # quick adjustment
+    print(folder_sizes)
+
+    folder_sizes = list(itertools.chain.from_iterable(folder_sizes))
+    print(folder_sizes)
     print("Folder sizes . . .")
     for folder_size in folder_sizes:
         print(folder_size)
 
-    return 0
+    hundred_k_count = len([folder for folder in folder_sizes if list(folder.values())[0] <= 100000])
+
+    return hundred_k_count
 
 
 def read_input_file():
@@ -167,6 +179,6 @@ if __name__ == '__main__':
     input_file_lines = read_input_file()
 
     problem_answer = main_problem_7_1(input_file_lines, False)
-    print(f"ANSWER TO PROBLEM 7.1, number of big directories = {problem_answer}")
+    print(f"ANSWER TO PROBLEM 7.1, number of small directories = {problem_answer}")
     problem_answer = main_problem_7_2(input_file_lines, False)
     print(f"ANSWER TO PROBLEM 7.2, number of big directories = {problem_answer}")

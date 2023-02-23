@@ -1,4 +1,5 @@
-import itertools
+from utility.listutility import flatten
+
 
 class Folder:
 
@@ -51,7 +52,8 @@ class Folder:
         else:
             # recursive case
             list_of_lists_of_sf_sizes = [sf.get_all_folder_sizes() for sf in self.sub_folder_list()]
-            child_folder_sizes_list = list(itertools.chain.from_iterable(list_of_lists_of_sf_sizes))
+            child_folder_sizes_list = flatten(list_of_lists_of_sf_sizes)
+
             return [{'/'.join(self.path): self.size}] + child_folder_sizes_list
 
     def sub_folder_list(self):
