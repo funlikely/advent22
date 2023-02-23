@@ -141,6 +141,10 @@ def main_problem_7_1(lines, debug_and_log):
 
     folder_sizes = file_system.get_all_folder_sizes()
 
+    print("Folder sizes . . .")
+    for folder_size in folder_sizes:
+        print(folder_size)
+
     return 0
 
 

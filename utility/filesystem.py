@@ -1,3 +1,5 @@
+import itertools
+
 class Folder:
 
     def __init__(self, name, path, parent):
@@ -48,7 +50,8 @@ class Folder:
             return {'/'.join(self.path): self.size}
         else:
             # recursive case
-            child_folder_sizes_list = [{'/'.join(self.path + sf.path): sf.size} for sf in self.sub_folder_list()]
+            list_of_lists_of_sf_sizes = [sf.get_all_folder_sizes() for sf in self.sub_folder_list()]
+            child_folder_sizes_list = list(itertools.chain.from_iterable(list_of_lists_of_sf_sizes))
             return [{'/'.join(self.path): self.size}] + child_folder_sizes_list
 
     def sub_folder_list(self):
