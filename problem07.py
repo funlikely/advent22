@@ -146,18 +146,19 @@ def main_problem_7_1(lines, debug_and_log):
     print(flattened_z)
 
     folder_sizes = file_system.get_all_folder_sizes()
-    folder_sizes = folder_sizes[1:]  # quick adjustment
+    folder_sizes[0] = [{"/": list(folder_sizes[0].values())[0]}]  # quick adjustment
     print(folder_sizes)
 
     folder_sizes = list(itertools.chain.from_iterable(folder_sizes))
     print(folder_sizes)
     print("Folder sizes . . .")
     for folder_size in folder_sizes:
-        print(folder_size)
+        if list(folder_size.values())[0] < 100000:
+            print(folder_size)
 
-    hundred_k_count = len([folder for folder in folder_sizes if list(folder.values())[0] <= 100000])
+    hundred_k_folder_size_sum = sum([list(folder.values())[0] for folder in folder_sizes if list(folder.values())[0] <= 100000])
 
-    return hundred_k_count
+    return hundred_k_folder_size_sum, folder_sizes
 
 
 def read_input_file():
@@ -167,18 +168,61 @@ def read_input_file():
 
 
 """
-Part Two
+--- Part Two ---
+
+Now, you're ready to choose a directory to delete.
+
+The total disk space available to the filesystem is 70000000. To run the update, you need unused space of at least 
+30000000. You need to find a directory you can delete that will free up enough space to run the update. 
+
+In the example above, the total size of the outermost directory (and thus the total amount of used space) is 
+48381165; this means that the size of the unused space must currently be 21618835, which isn't quite the 30000000 
+required by the update. Therefore, the update still requires a directory with total size of at least 8381165 to be 
+deleted before it can run. 
+
+To achieve this, you have the following options:
+
+    Delete directory e, which would increase unused space by 584.
+    Delete directory a, which would increase unused space by 94853.
+    Delete directory d, which would increase unused space by 24933642.
+    Delete directory /, which would increase unused space by 48381165.
+
+Directories e and a are both too small; deleting them would not free up enough space. However, directories d and / 
+are both big enough! Between these, choose the smallest: d, increasing unused space by 24933642. 
+
+Find the smallest directory that, if deleted, would free up enough space on the filesystem to run the update. What is 
+the total size of that directory? 
+
 """
 
 
-def main_problem_7_2(lines, debug_and_log):
-    return 0
+def main_problem_7_2(folder_sizes, debug_and_log):
+
+    print("max size at the end is 40,000,000")
+    total_current_fs_size = list(folder_sizes[0].values())[0]
+
+    print(f"current size of all files is {total_current_fs_size}")
+
+    size_to_delete = total_current_fs_size - 40000000
+    print(f"look for folder of size {size_to_delete} to delete")
+
+    best_folder_size = 1000000000
+
+    for folder_size in folder_sizes:
+        folder_size_value = list(folder_size.values())[0]
+        if size_to_delete <= folder_size_value < best_folder_size:
+            best_folder_size = folder_size_value
+
+    return best_folder_size
+
+
+def main():
+    input_file_lines = read_input_file()
+    problem_answer, folder_sizes = main_problem_7_1(input_file_lines, False)
+    print(f"ANSWER TO PROBLEM 7.1, number of small directories = {problem_answer}")
+    problem_answer = main_problem_7_2(folder_sizes, False)
+    print(f"ANSWER TO PROBLEM 7.2, number of big directories = {problem_answer}")
 
 
 if __name__ == '__main__':
-    input_file_lines = read_input_file()
-
-    problem_answer = main_problem_7_1(input_file_lines, False)
-    print(f"ANSWER TO PROBLEM 7.1, number of small directories = {problem_answer}")
-    problem_answer = main_problem_7_2(input_file_lines, False)
-    print(f"ANSWER TO PROBLEM 7.2, number of big directories = {problem_answer}")
+    main()
