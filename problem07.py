@@ -98,6 +98,9 @@ directories?
 from utility.filesystem import Folder
 from utility.listutility import flatten
 import itertools
+import utility.logscratch as log
+
+log.enable_log_info = False
 
 
 def process_folder_listing(file_system, current_path, folder_listing_lines):
@@ -113,7 +116,7 @@ def process_folder_listing(file_system, current_path, folder_listing_lines):
                 file_system.sub_folder(current_path).add_file(file_name, file_size)
 
 
-def main_problem_7_1(lines, debug_and_log):
+def main_problem_7_1(lines):
     file_system = Folder("root", [], None)
 
     current_path = []
@@ -143,18 +146,18 @@ def main_problem_7_1(lines, debug_and_log):
 
     z = [[1, [{'x': {'y': 'z'}}, 2, [[3], [[5, 4], 2]]]]]
     flattened_z = flatten(z)
-    print(flattened_z)
+    log.info(flattened_z)
 
     folder_sizes = file_system.get_all_folder_sizes()
     folder_sizes[0] = [{"/": list(folder_sizes[0].values())[0]}]  # quick adjustment
-    print(folder_sizes)
+    log.info(folder_sizes)
 
     folder_sizes = list(itertools.chain.from_iterable(folder_sizes))
-    print(folder_sizes)
-    print("Folder sizes . . .")
+    log.info(folder_sizes)
+    log.info("Folder sizes . . .")
     for folder_size in folder_sizes:
         if list(folder_size.values())[0] < 100000:
-            print(folder_size)
+            log.info(folder_size)
 
     hundred_k_folder_size_sum = sum([list(folder.values())[0] for folder in folder_sizes if list(folder.values())[0] <= 100000])
 
@@ -196,15 +199,15 @@ the total size of that directory?
 """
 
 
-def main_problem_7_2(folder_sizes, debug_and_log):
+def main_problem_7_2(folder_sizes):
 
-    print("max size at the end is 40,000,000")
+    log.info("max size at the end is 40,000,000")
     total_current_fs_size = list(folder_sizes[0].values())[0]
 
-    print(f"current size of all files is {total_current_fs_size}")
+    log.info(f"current size of all files is {total_current_fs_size}")
 
     size_to_delete = total_current_fs_size - 40000000
-    print(f"look for folder of size {size_to_delete} to delete")
+    log.info(f"look for folder of size {size_to_delete} to delete")
 
     best_folder_size = 1000000000
 
@@ -218,10 +221,15 @@ def main_problem_7_2(folder_sizes, debug_and_log):
 
 def main():
     input_file_lines = read_input_file()
-    problem_answer, folder_sizes = main_problem_7_1(input_file_lines, False)
+    problem_answer, folder_sizes = main_problem_7_1(input_file_lines)
     print(f"ANSWER TO PROBLEM 7.1, number of small directories = {problem_answer}")
-    problem_answer = main_problem_7_2(folder_sizes, False)
+
+    # 1350966
+
+    problem_answer = main_problem_7_2(folder_sizes)
     print(f"ANSWER TO PROBLEM 7.2, number of big directories = {problem_answer}")
+
+    # 6296435
 
 
 if __name__ == '__main__':
