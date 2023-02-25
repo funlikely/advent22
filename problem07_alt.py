@@ -25,7 +25,7 @@ def process_folder_listing(file_system, current_path, folder_listing_lines):
                 file_system.sub_folder(current_path).add_file(file_name, file_size)
 
 
-def main_problem_7_1(lines, debug_and_log):
+def main_problem_7_1(lines):
     file_system = Folder("root", [], None)
 
     current_path = []
@@ -55,11 +55,13 @@ def main_problem_7_1(lines, debug_and_log):
 
     z = [[1, [{'x': {'y': 'z'}}, 2, [[3], [[5, 4], 2]]]]]
     flattened_z = flatten(z)
-    log.info(flattened_z)
+    log.info(f"z = {z} and flattened(z) = {flattened_z}")
 
     folder_sizes = file_system.get_all_folder_sizes()
     folder_sizes['/'] = folder_sizes.pop('')  # quick adjustment
     log.info(folder_sizes)
+
+    log.info(f"Number of folders = {len(folder_sizes)}")
 
     # folder_sizes = list(itertools.chain.from_iterable(folder_sizes))
     # log.info(folder_sizes)
@@ -87,7 +89,7 @@ Alternate implementation.
 """
 
 
-def main_problem_7_2(folder_sizes, debug_and_log):
+def main_problem_7_2(folder_sizes):
 
     log.info("max size at the end is 40,000,000")
     total_current_fs_size = folder_sizes['/']
@@ -108,9 +110,9 @@ def main_problem_7_2(folder_sizes, debug_and_log):
 
 def main():
     input_file_lines = read_input_file()
-    problem_answer, folder_sizes = main_problem_7_1(input_file_lines, False)
+    problem_answer, folder_sizes = main_problem_7_1(input_file_lines)
     print(f"ANSWER TO PROBLEM 7.1, number of small directories = {problem_answer}")
-    problem_answer = main_problem_7_2(folder_sizes, False)
+    problem_answer = main_problem_7_2(folder_sizes)
     print(f"ANSWER TO PROBLEM 7.2, number of big directories = {problem_answer}")
 
     # Correct info from previous implementation
