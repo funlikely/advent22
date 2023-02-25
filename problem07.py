@@ -100,7 +100,7 @@ from utility.listutility import flatten
 import itertools
 import utility.logscratch as log
 
-log.enable_log_info = False
+log.enable_log_info = True
 
 
 def process_folder_listing(file_system, current_path, folder_listing_lines):
@@ -146,20 +146,25 @@ def main_problem_7_1(lines):
 
     z = [[1, [{'x': {'y': 'z'}}, 2, [[3], [[5, 4], 2]]]]]
     flattened_z = flatten(z)
-    log.info(flattened_z)
+    log.info(f"z = {z} and flattened(z) = {flattened_z}")
 
     folder_sizes = file_system.get_all_folder_sizes()
     folder_sizes[0] = [{"/": list(folder_sizes[0].values())[0]}]  # quick adjustment
     log.info(folder_sizes)
 
+    log.info(f"Number of folders = {len(folder_sizes)}")
+
     folder_sizes = list(itertools.chain.from_iterable(folder_sizes))
     log.info(folder_sizes)
-    log.info("Folder sizes . . .")
+    log.info("Folders of under size 100000:")
     for folder_size in folder_sizes:
         if list(folder_size.values())[0] < 100000:
             log.info(folder_size)
 
-    hundred_k_folder_size_sum = sum([list(folder.values())[0] for folder in folder_sizes if list(folder.values())[0] <= 100000])
+    hundred_k_folder_size_sum = sum([list(folder.values())[0]
+                                     for folder
+                                     in folder_sizes
+                                     if list(folder.values())[0] <= 100000])
 
     return hundred_k_folder_size_sum, folder_sizes
 
@@ -224,12 +229,12 @@ def main():
     problem_answer, folder_sizes = main_problem_7_1(input_file_lines)
     print(f"ANSWER TO PROBLEM 7.1, number of small directories = {problem_answer}")
 
-    # 1350966
-
     problem_answer = main_problem_7_2(folder_sizes)
     print(f"ANSWER TO PROBLEM 7.2, number of big directories = {problem_answer}")
 
-    # 6296435
+    # ANSWER TO PROBLEM 7.1, number of small directories = 1350966
+    # ANSWER TO PROBLEM 7.2, number of big directories = 6296435
+    # Number of folders = 196
 
 
 if __name__ == '__main__':
