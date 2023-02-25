@@ -122,8 +122,13 @@ Consider each tree on your map. What is the highest scenic score possible for an
 """
 
 
-def main_problem_8_2(folder_sizes, debug_and_log):
-    return 0
+def main_problem_8_2(lines, debug_and_log):
+    forest_array = np.array([[int(a) for a in line] for line in lines])
+    (forest_height, forest_width) = forest_array.shape
+
+    max_score = 0
+
+    return max_score
 
 
 def main():
@@ -131,7 +136,7 @@ def main():
     problem_answer = main_problem_8_1(input_file_lines, True)
     print(f"ANSWER TO PROBLEM 8.1, number of visible trees = {problem_answer}")
     problem_answer = main_problem_8_2(input_file_lines, False)
-    print(f"ANSWER TO PROBLEM 8.2, number of invisible trees? = {problem_answer}")
+    print(f"ANSWER TO PROBLEM 8.2, max_scenic_score = {problem_answer}")
 
 
 if __name__ == '__main__':
