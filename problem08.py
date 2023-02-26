@@ -49,7 +49,7 @@ def main_problem_8_1(lines, debug_and_log):
 
     for y in range(forest_height):
         for x in range(forest_width):
-            if x == 2 and y == 5:
+            if x == 2 and y == 5 and debug_and_log:
                 print(f"up {forest_array[:y, x]}")
                 print(f"down (reverse) {forest_array[:y:-1, x]}")
                 print(f"left {forest_array[y, :x]}")
@@ -127,10 +127,7 @@ def main_problem_8_2(lines, debug_and_log):
     (forest_height, forest_width) = forest_array.shape
 
     scenic_score_array = np.array([[0] * forest_width] * forest_height)
-    n_scenic_score_array = np.array([[0] * forest_width] * forest_height)
-    s_scenic_score_array = np.array([[0] * forest_width] * forest_height)
-    w_scenic_score_array = np.array([[0] * forest_width] * forest_height)
-    e_scenic_score_array = np.array([[0] * forest_width] * forest_height)
+    scenic_distance_array = np.array([[[0] * 4] * forest_width] * forest_height)  # Each [0, 0, 0, 0] is [N, S, W, E]
 
     if debug_and_log:
         print(f"part of the forest:")
@@ -140,29 +137,29 @@ def main_problem_8_2(lines, debug_and_log):
 
     for y in range(1, forest_height - 1):
         for x in range(1, forest_width - 1):
-            if x == 2 and y == 5:
+            if x == 2 and y == 5 and debug_and_log:
                 print(f"up {forest_array[:y, x]}")
                 print(f"down (reverse) {forest_array[:y:-1, x]}")
                 print(f"left {forest_array[y, :x]}")
                 print(f"right (reverse) {forest_array[y, :x:-1]}")
 
             if x == 0 or y == 0 or x == forest_width - 1 or y == forest_height - 1:
-                scenic_score_array[x, y] = 1
+                scenic_score_array[x, y, ::] = 1
                 continue
 
             t = forest_array[y, x]  # current tree height
 
-            north_sight_line = np.flip(forest_array[:y, x])
-            south_sight_line = np.flip(forest_array[:y:-1, x])
-            west_sight_line = np.flip(forest_array[y, :x])
-            east_sight_line = np.flip(forest_array[y, :x:-1])
+            north_sight_line = np.flip(forest_array[:y, x]).tolist()
+            south_sight_line = np.flip(forest_array[:y:-1, x]).tolist()
+            west_sight_line = np.flip(forest_array[y, :x]).tolist()
+            east_sight_line = np.flip(forest_array[y, :x:-1]).tolist()
 
-            n_scenic_score_array[y, x] = north_score = get_score(north_sight_line, t)
-            s_scenic_score_array[y, x] = south_score = get_score(south_sight_line, t)
-            w_scenic_score_array[y, x] = west_score = get_score(west_sight_line, t)
-            e_scenic_score_array[y, x] = east_score = get_score(east_sight_line, t)
+            scenic_distance_array[y, x, 0] = get_score(north_sight_line, t)
+            scenic_distance_array[y, x, 1] = get_score(south_sight_line, t)
+            scenic_distance_array[y, x, 2] = get_score(west_sight_line, t)
+            scenic_distance_array[y, x, 3] = get_score(east_sight_line, t)
 
-            scenic_score_array[y, x] = north_score * south_score * west_score * east_score
+            scenic_score_array[y, x] = np.product(scenic_distance_array[y, x])
 
     return np.max(scenic_score_array)
 
@@ -170,17 +167,26 @@ def main_problem_8_2(lines, debug_and_log):
 def get_score(sight_line, t):
     sight_lengths = [len(sight_line[:d])
                      for d
-                     in range(1, len(sight_line))
+                     in range(1, len(sight_line) + 1)
                      if max(sight_line[:d]) < t]
-    return max(sight_lengths) if len(sight_lengths) > 0 else 0
+    if len(sight_lengths) > 0:
+        if max(sight_lengths) == len(sight_line):
+            return len(sight_line)
+        else:
+            return max(sight_lengths) + 1
+    else:
+        return 0
 
 
 def main():
     input_file_lines = read_input_file()
-    problem_answer = main_problem_8_1(input_file_lines, True)
+    problem_answer = main_problem_8_1(input_file_lines, False)
     print(f"ANSWER TO PROBLEM 8.1, number of visible trees = {problem_answer}")
     problem_answer = main_problem_8_2(input_file_lines, False)
     print(f"ANSWER TO PROBLEM 8.2, max_scenic_score = {problem_answer}")
+
+    # ANSWER TO PROBLEM 8.1, number of visible trees = 1700
+    # ANSWER TO PROBLEM 8.2, max_scenic_score = 470596
 
 
 if __name__ == '__main__':
