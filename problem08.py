@@ -126,9 +126,53 @@ def main_problem_8_2(lines, debug_and_log):
     forest_array = np.array([[int(a) for a in line] for line in lines])
     (forest_height, forest_width) = forest_array.shape
 
-    max_score = 0
+    scenic_score_array = np.array([[0] * forest_width] * forest_height)
+    n_scenic_score_array = np.array([[0] * forest_width] * forest_height)
+    s_scenic_score_array = np.array([[0] * forest_width] * forest_height)
+    w_scenic_score_array = np.array([[0] * forest_width] * forest_height)
+    e_scenic_score_array = np.array([[0] * forest_width] * forest_height)
 
-    return max_score
+    if debug_and_log:
+        print(f"part of the forest:")
+        print(forest_array[:15, :15])
+        print(f"dimensions of forest = {forest_array.shape}")
+        print(f"dimensions of visibility array = {scenic_score_array.shape}")
+
+    for y in range(1, forest_height - 1):
+        for x in range(1, forest_width - 1):
+            if x == 2 and y == 5:
+                print(f"up {forest_array[:y, x]}")
+                print(f"down (reverse) {forest_array[:y:-1, x]}")
+                print(f"left {forest_array[y, :x]}")
+                print(f"right (reverse) {forest_array[y, :x:-1]}")
+
+            if x == 0 or y == 0 or x == forest_width - 1 or y == forest_height - 1:
+                scenic_score_array[x, y] = 1
+                continue
+
+            t = forest_array[y, x]  # current tree height
+
+            north_sight_line = np.flip(forest_array[:y, x])
+            south_sight_line = np.flip(forest_array[:y:-1, x])
+            west_sight_line = np.flip(forest_array[y, :x])
+            east_sight_line = np.flip(forest_array[y, :x:-1])
+
+            n_scenic_score_array[y, x] = north_score = get_score(north_sight_line, t)
+            s_scenic_score_array[y, x] = south_score = get_score(south_sight_line, t)
+            w_scenic_score_array[y, x] = west_score = get_score(west_sight_line, t)
+            e_scenic_score_array[y, x] = east_score = get_score(east_sight_line, t)
+
+            scenic_score_array[y, x] = north_score * south_score * west_score * east_score
+
+    return np.max(scenic_score_array)
+
+
+def get_score(sight_line, t):
+    sight_lengths = [len(sight_line[:d])
+                     for d
+                     in range(1, len(sight_line))
+                     if max(sight_line[:d]) < t]
+    return max(sight_lengths) if len(sight_lengths) > 0 else 0
 
 
 def main():
