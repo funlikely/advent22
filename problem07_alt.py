@@ -62,6 +62,7 @@ def main_problem_7_1(lines):
     log.info(folder_sizes)
 
     log.info(f"Number of folders = {len(folder_sizes)}")
+    log.info(f"Total size of / folder = {folder_sizes['/']}")
 
     # folder_sizes = list(itertools.chain.from_iterable(folder_sizes))
     # log.info(folder_sizes)
@@ -119,6 +120,7 @@ def main():
     # ANSWER TO PROBLEM 7.1, number of small directories = 1350966
     # ANSWER TO PROBLEM 7.2, number of big directories = 6296435
     # Number of folders = 196
+    # Total size = 46233734
 
 
 if __name__ == '__main__':

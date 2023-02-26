@@ -235,6 +235,7 @@ def main():
     # ANSWER TO PROBLEM 7.1, number of small directories = 1350966
     # ANSWER TO PROBLEM 7.2, number of big directories = 6296435
     # Number of folders = 196
+    # Total size = 46233734
 
 
 if __name__ == '__main__':
