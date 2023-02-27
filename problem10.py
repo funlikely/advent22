@@ -52,28 +52,43 @@ Find the signal strength during the 20th, 60th, 100th, 140th, 180th, and 220th c
 
 
 def main_problem_10_1(lines, debug_and_log):
-    cycle = 0
+    cycle = 1
     x = 1
-    add_cycle_and_amount = (0, 0)
+    add_amount = 0
+    cycles_to_wait = 0
     strengths_of_concern = []
+    command = "xxxx"
 
-    for i in range(len(lines)):
-        command = lines[i]
-        if command[0:3] == 'add':
-            add_cycle_and_amount = (cycle + 2, int(command.split(' ')[1]))
-            cycle = run_a_cycle(cycle, strengths_of_concern, x)
-        if cycle == add_cycle_and_amount[0]:
-            x += add_cycle_and_amount[1]
-        cycle = run_a_cycle(cycle, strengths_of_concern, x)
+    while len(lines) > 0:
+        # take a command off the queue if we are not waiting for another command
+        if cycles_to_wait == 0:
+            command = lines[0]
+            lines = lines[1:]
+
+            # process the command
+            if command[0:4] == 'noop':
+                cycles_to_wait = 1
+            elif command[0:3] == 'add':
+                cycles_to_wait = 2
+                add_amount = int(command.split(' ')[1])
+
+        # check strengths during the cycle
+        if cycle in [20, 60, 100, 140, 180, 220]:
+            strengths_of_concern.append(x * cycle)
+
+        # END of cycle, which is when register X updates and then cycle number increments
+        if cycles_to_wait == 0 and add_amount != 0:
+            x += add_amount
+            add_amount = 0
+        cycle = cycle + 1
+        if cycles_to_wait > 0:
+            cycles_to_wait = cycles_to_wait - 1
 
     return sum(strengths_of_concern)
 
 
 def run_a_cycle(cycle, strengths_of_concern, x):
     cycle = cycle + 1
-    if cycle in [20, 60, 100, 140, 180, 220]:
-        strengths_of_concern.append(x * cycle)
-    return cycle
 
 
 def add_tuple(a, b):
