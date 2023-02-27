@@ -49,6 +49,7 @@ The sum of these signal strengths is 13140.
 
 Find the signal strength during the 20th, 60th, 100th, 140th, 180th, and 220th cycles. What is the sum of these six signal strengths?
 """
+import numpy as np
 
 
 def main_problem_10_1(lines, debug_and_log):
@@ -243,7 +244,46 @@ Render the image given by your program. What eight capital letters appear on you
 
 
 def main_problem_10_2(lines, debug_and_log):
-    return 0
+    cycle = 1
+    x = 1
+    add_amount = 0
+    cycles_to_wait = 0
+    pixels = ['_'] * 240
+    command = "xxxx"
+
+    while len(lines) > 0:
+        # take a command off the queue if we are not waiting for another command
+        if cycles_to_wait == 0:
+            command = lines[0]
+            lines = lines[1:]
+
+            # process the command
+            if command[0:4] == 'noop':
+                cycles_to_wait = 1
+            elif command[0:3] == 'add':
+                cycles_to_wait = 2
+                add_amount = int(command.split(' ')[1])
+
+        # check strengths DURING the cycle
+        if 0 <= cycle % 40 - x < 3:
+            pixel = 'X'
+        else:
+            pixel = '.'
+        pixels[cycle - 1] = pixel
+
+        # END of cycle, which is when register X updates and then cycle number increments
+        cycle = cycle + 1
+        if cycles_to_wait > 0:
+            cycles_to_wait = cycles_to_wait - 1
+        if cycles_to_wait == 0 and add_amount != 0:
+            x += add_amount
+            add_amount = 0
+
+        crt = np.array(pixels).reshape((6, 40))
+        crt_picture = []
+        for line in crt:
+            crt_picture.append(''.join([str(a) for a in line]))
+    return crt_picture
 
 
 def main():
@@ -256,6 +296,14 @@ def main():
         print(line)
 
     # ANSWER TO PROBLEM 10.1, sum of signal strengths = 12840
+
+    # ANSWER TO PROBLEM 10.2, screen display. . .
+    # XXXX.X..X...XX.XXXX.XXX....XX.XXXX.XXXX.
+    # ...X.X.X.....X.X....X..X....X.X.......X.
+    # ..X..XX......X.XXX..XXX.....X.XXX....X..
+    # .X...X.X.....X.X....X..X....X.X.....X..X
+    # X....X.X..X..X.X....X..X.X..X.X....X....
+    # XXXX.X..X..XX..X....XXX...XX..X....XXXX.
 
 
 if __name__ == '__main__':
