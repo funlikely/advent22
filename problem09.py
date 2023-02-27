@@ -166,7 +166,37 @@ rope visit at least once?
 
 
 def main_problem_9_2(lines, debug_and_log):
-    return 0
+    head = (0, 0)
+    tail = (0, 0)
+    rope = [(0, 0)] * 10  # rope[0] = head, rope[9] = last knot
+    traveled_set = {(0, 0)}
+    traveled_list = [(0, 0)]
+
+    rope_step_dict = {"U": (0, 1), "D": (0, -1), "R": (1, 0), "L": (-1, 0)}
+
+    for i in range(len(lines)):
+        direction_to_move, number_of_steps = lines[i].split(' ')
+        number_of_steps = int(number_of_steps)
+        for j in range(number_of_steps):
+            rope_step = rope_step_dict[direction_to_move]
+            rope[0] = add_tuple(rope[0], rope_step)
+            for k in range(9):
+                if rope[k][0] - rope[k+1][0] > 1:
+                    rope[k+1] = add_tuple(rope[k+1], (1, 0))
+                elif rope[k][0] - rope[k+1][0] < -1:
+                    rope[k+1] = add_tuple(rope[k+1], (-1, 0))
+                if rope[k][1] - rope[k+1][1] > 1:
+                    rope[k+1] = add_tuple(rope[k+1], (0, 1))
+                elif rope[k][1] - rope[k+1][1] < -1:
+                    rope[k+1] = add_tuple(rope[k+1], (0, -1))
+            traveled_set.add(rope[9])
+            if rope[9] not in traveled_list:
+                if debug_and_log:
+                    print(f"len of traveled_list = {len(traveled_list)}")
+                    print(f"traveled_list = {traveled_list} and rope[9] = {rope[9]}")
+                traveled_list.append(rope[9])
+
+    return len(traveled_list)
 
 
 def main():
@@ -174,9 +204,10 @@ def main():
     problem_answer = main_problem_9_1(input_file_lines, False)
     print(f"ANSWER TO PROBLEM 9.1, count of rope tail locations = {problem_answer}")
     problem_answer = main_problem_9_2(input_file_lines, False)
-    print(f"ANSWER TO PROBLEM 9.2, something or another = {problem_answer}")
+    print(f"ANSWER TO PROBLEM 9.2, count of longer rope tail locations = {problem_answer}")
 
     # ANSWER TO PROBLEM 9.1, count of rope tail locations = 6044
+    # ANSWER TO PROBLEM 9.2, count of longer rope tail locations = 2384
 
 
 if __name__ == '__main__':
