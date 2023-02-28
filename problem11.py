@@ -232,34 +232,72 @@ Figure out which monkeys to chase by counting how many items they inspect over 2
 business after 20 rounds of stuff-slinging simian shenanigans?
 
 """
+from utility.monkey import Monkey
 
 
-def load_monkeys(lines):
+def load_monkeys(lines, debug_and_log):
+    operations = [lambda x: x, lambda x: x, lambda x: x, lambda x: x,
+                  lambda x: x, lambda x: x, lambda x: x, lambda x: x]
+    monkey_list = []
     for i in range(0, len(lines), 7):
-        starting_items = lines[i+1].replace(',', '').split(' ')[2:]
+        monkey_counter = 0
+        starting_items = lines[i + 1].replace(',', '').split(' ')[2:]
         worry_ints = list(map(int, starting_items[2:]))
-        operation_line = lines[i+2]
+        operation_line = lines[i + 2]
         if 'old * old' in operation_line:
-            operation = 'square'
-            operand = None
+            op = 'square'
+            opnum = None
         elif 'old *' in operation_line:
-            operation = 'multipy'
-            operand = int(lines[i+2].split(' ')[7])
+            op = 'multiply'
+            opnum = int(lines[i + 2].split(' ')[7])
         else:
-            operation = 'add'
-            operand = int(lines[i+2].split(' ')[5])
-        test_divisor = int(lines[i+3].split(' ')[3])
-        targets = (int(lines[i+4].split(' ')[5]), int(lines[i+5].split(' ')[5]))
-        print('test')
+            op = 'add'
+            opnum = int(lines[i + 2].split(' ')[7])
+        test_divisor = int(lines[i + 3].split(' ')[5])
+        targets = (int(lines[i + 4].split(' ')[9]), int(lines[i + 5].split(' ')[9]))
+        monkey_list.append(Monkey(worry_ints, op, opnum, test_divisor, targets))
 
-    return 0
+        if debug_and_log:
+            print([monkey_list[-1:][0].operate(x) for x in range(0, 5)])
 
+    if debug_and_log:
+        for k in range(len(monkey_list)):
+            print([monkey_list[k].operate(x) for x in range(0, 5)])
+
+    return monkey_list
 
 
 def main_problem_11_1(lines, debug_and_log):
-    monkey_list = load_monkeys(lines)
+    monkey_list = load_monkeys(lines, debug_and_log)
 
-    return 0
+    round_number = 1
+
+    while round_number < 21:
+        for i in range(len(monkey_list)):
+            monkey = monkey_list[i]
+            while len(monkey.items) > 0:
+                monkey.activity_counter += 1
+                m = monkey.items[0]
+                monkey.items = monkey.items[1:]  # make monkey.items smaller
+                m = monkey.operate(m)
+                m = int(m / 3)
+                if m % monkey.test == 0:
+                    target = monkey.targets[0]
+                else:
+                    target = monkey.targets[1]
+                monkey_list[target].items.append(m)
+        if debug_and_log:
+            print(f"Monkey activity round {round_number} = {[m.activity_counter for m in monkey_list]}")
+        round_number += 1  # increment round_number
+
+    monkey_activity = [m.activity_counter for m in monkey_list]
+    if debug_and_log:
+        print(f"Monkey activity round {round_number} = {monkey_activity}")
+    sorted_mb = sorted(monkey_activity)
+    len_mb = len(monkey_activity)
+    monkey_business = sorted_mb[len_mb - 1] * sorted_mb[len_mb - 2]
+
+    return monkey_business
 
 
 def read_input_file():
@@ -271,6 +309,24 @@ def read_input_file():
 """
 --- Part Two ---
 
+You're worried you might not ever get your items back. So worried, in fact, that your relief that a monkey's 
+inspection didn't damage an item no longer causes your worry level to be divided by three.
+
+Unfortunately, that relief was all that was keeping your worry levels from reaching ridiculous levels. You'll need to 
+find another way to keep your worry levels manageable.
+
+At this rate, you might be putting up with these monkeys for a very long time - possibly 10000 rounds!
+
+With these new rules, you can still figure out the monkey business after 10000 rounds. Using the same example above:
+
+-- excluded --
+
+After 10000 rounds, the two most active monkeys inspected items 52166 and 52013 times. Multiplying these together, 
+the level of monkey business in this situation is now 2713310158.
+
+Worry levels are no longer divided by three after each item is inspected; you'll need to find another way to keep 
+your worry levels manageable. Starting again from the initial state in your puzzle input, what is the level of monkey 
+business after 10000 rounds?
 
 """
 
@@ -281,7 +337,7 @@ def main_problem_11_2(lines, debug_and_log):
 
 def main():
     input_file_lines = read_input_file()
-    problem_answer = main_problem_11_1(input_file_lines, False)
+    problem_answer = main_problem_11_1(input_file_lines, True)
     print(f"ANSWER TO PROBLEM 11.1, level of monkey business = {problem_answer}")
     problem_answer = main_problem_11_2(input_file_lines, False)
     print(f"ANSWER TO PROBLEM 11.2, level of what what = {problem_answer}")
