@@ -332,15 +332,47 @@ business after 10000 rounds?
 
 
 def main_problem_11_2(lines, debug_and_log):
-    return 0
+    monkey_list = load_monkeys(lines, debug_and_log)
+
+    round_number = 1
+
+    while round_number < 10001:
+        for i in range(len(monkey_list)):
+            monkey = monkey_list[i]
+            while len(monkey.items) > 0:
+                monkey.activity_counter += 1
+                m = monkey.items[0]
+                monkey.items = monkey.items[1:]  # make monkey.items smaller
+                m = monkey.operate(m)
+                m = m % 9699690
+                if m % monkey.test == 0:
+                    target = monkey.targets[0]
+                else:
+                    target = monkey.targets[1]
+                monkey_list[target].items.append(m)
+        if debug_and_log and round_number % 1000 == 0:
+            print(f"Monkey activity round {round_number} = {[m.activity_counter for m in monkey_list]}")
+        round_number += 1  # increment round_number
+
+    monkey_activity = [m.activity_counter for m in monkey_list]
+    if debug_and_log:
+        print(f"Monkey activity round {round_number} = {monkey_activity}")
+    sorted_mb = sorted(monkey_activity)
+    len_mb = len(monkey_activity)
+    monkey_business = sorted_mb[len_mb - 1] * sorted_mb[len_mb - 2]
+
+    return monkey_business
 
 
 def main():
     input_file_lines = read_input_file()
     problem_answer = main_problem_11_1(input_file_lines, True)
     print(f"ANSWER TO PROBLEM 11.1, level of monkey business = {problem_answer}")
-    problem_answer = main_problem_11_2(input_file_lines, False)
-    print(f"ANSWER TO PROBLEM 11.2, level of what what = {problem_answer}")
+    problem_answer = main_problem_11_2(input_file_lines, True)
+    print(f"ANSWER TO PROBLEM 11.2, level of monkey business = {problem_answer}")
+
+    # ANSWER TO PROBLEM 11.1, level of monkey business = 58786
+    # ANSWER TO PROBLEM 11.2, level of monkey business = 14952185856
 
 
 if __name__ == '__main__':
